@@ -898,6 +898,24 @@ const MenuPage = () => {
                     
                     if (!targetProduct) return null;
 
+                    const matchesSelectedVariant = (addon, selectedVariant) => {
+                        if (!addon.size) return true;
+                        
+                        const hasVariants = targetProduct.variants && targetProduct.variants.length > 0 && targetProduct.variants.some(v => v.name);
+                        if (!hasVariants) return true;
+                        
+                        if (!selectedVariant || !selectedVariant.name) return false;
+                        
+                        const variantName = selectedVariant.name.toLowerCase().trim();
+                        const addonSize = addon.size.toLowerCase().trim();
+                        
+                        if (addonSize === 's' && (variantName === 'small' || variantName === 's')) return true;
+                        if (addonSize === 'm' && (variantName === 'medium' || variantName === 'm')) return true;
+                        if (addonSize === 'l' && (variantName === 'large' || variantName === 'l')) return true;
+                        
+                        return addonSize === variantName;
+                    };
+
                     return (
                         <>
                             {/* Variants Section */}
@@ -946,13 +964,28 @@ const MenuPage = () => {
                                                         checked={selectedVariants.id === variant.id || selectedVariants.name === variant.name}
                                                         onChange={() => {
                                                             setSelectedVariants(variant);
+                                                            
+                                                            // Clean up addons that are incompatible with the new variant size
+                                                            const newAddons = { ...selectedAddons };
+                                                            Object.keys(newAddons).forEach(key => {
+                                                                const addonItem = newAddons[key];
+                                                                if (addonItem.type === 'Addon') {
+                                                                    const origAddon = targetProduct.addons.find(a => (a.id === addonItem.id || a.name === addonItem.name));
+                                                                    if (origAddon && !matchesSelectedVariant(origAddon, variant)) {
+                                                                        delete newAddons[key];
+                                                                    }
+                                                                }
+                                                            });
+                                                            setSelectedAddons(newAddons);
+
                                                             // Save to deal state
                                                             if (selectedProduct.isDeal) {
                                                                 setSelectedDealProducts(prev => ({
                                                                     ...prev,
                                                                     [activeSubProductIndex]: {
                                                                         ...prev[activeSubProductIndex],
-                                                                        variant: variant
+                                                                        variant: variant,
+                                                                        addons: newAddons
                                                                     }
                                                                 }));
                                                             }
@@ -1063,14 +1096,14 @@ const MenuPage = () => {
                             )}
 
                             {/* Addons Section */}
-                            {targetProduct.addons && targetProduct.addons.length > 0 && targetProduct.addons.some(a => a.name) && (
+                            {targetProduct.addons && targetProduct.addons.length > 0 && targetProduct.addons.some(a => a.name && matchesSelectedVariant(a, selectedVariants)) && (
                                 <div className="mb-6">
                                     <h3 className="font-bold text-gray-800 mb-3 flex items-center justify-between">
                                         Add Ons 
                                         <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-bold">Optional</span>
                                     </h3>
                                     <div className="space-y-3">
-                                        {targetProduct.addons.filter(a => a.name).map((addon, index) => (
+                                        {targetProduct.addons.filter(a => a.name && matchesSelectedVariant(a, selectedVariants)).map((addon, index) => (
                                             <div key={addon.id || index} className="flex flex-col gap-2 p-4 rounded-xl border border-gray-100">
                                                 <label 
                                                     className={`flex items-center justify-between cursor-pointer transition-all ${
