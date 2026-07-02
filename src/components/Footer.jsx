@@ -75,10 +75,12 @@ const Footer = () => {
              <span>Burlays Copyright © 2026. All Rights Reserved.</span>
           </div>
 
-          <div className="flex gap-4 text-xs font-bold text-gray-400 uppercase tracking-wide">
+          <div className="flex flex-wrap justify-center gap-4 text-xs font-bold text-gray-400 uppercase tracking-wide">
              <Link to="#" className="hover:text-[#E25C1D] transition-colors">Terms & Conditions</Link>
              <span>|</span>
-             <Link to="#" className="hover:text-[#E25C1D] transition-colors">Privacy Policy</Link>
+             <Link to="/privacy-policy" className="hover:text-[#E25C1D] transition-colors">Privacy Policy</Link>
+             <span>|</span>
+             <Link to="/delete-account" className="hover:text-[#E25C1D] transition-colors">Delete Account</Link>
           </div>
 
         </div>

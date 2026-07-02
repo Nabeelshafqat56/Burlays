@@ -10,12 +10,13 @@ import SingleProduct from "./components/SingleProduct";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PaymentScreen from "./components/PaymentScreen";
- import Header from "./components/Header";
+import Header from "./components/Header";
 import { Link, useLocation } from "react-router-dom";
 import LoginPage from "./components/LoginPage.jsx";
 import BlogDetail from "./components/BlogDetail";
 import JobOpportunities from "./components/JobOpportunities";
 import PrivacyPolicy from "./components/PrivacyPolicy";
+import DeleteAccount from "./components/DeleteAccount";
 import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { FaSpinner } from "react-icons/fa";
@@ -44,7 +45,7 @@ const App = () => {
   const hideFloatingButtonPaths = ['/login', '/cart', '/PaymentScreen', '/branches', '/menu', '/track-order'];
   const shouldHideFloatingButton = hideFloatingButtonPaths.some(path => location.pathname.startsWith(path));
   const isLoginPage = location.pathname === '/login';
-  const allowRenderWithoutBranchPaths = ["/login", "/privacy-policy", "/branches", "/careers", "/blog"];
+  const allowRenderWithoutBranchPaths = ["/login", "/privacy-policy", "/delete-account", "/branches", "/careers", "/blog"];
   const allowRenderWithoutBranch = allowRenderWithoutBranchPaths.some((p) => location.pathname.startsWith(p));
 
   React.useEffect(() => {
@@ -127,6 +128,9 @@ const App = () => {
 
         {/* Privacy Policy */}
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+
+        {/* Delete Account */}
+        <Route path="/delete-account" element={<DeleteAccount />} />
 
         {/* Branch Locator */}
         <Route path="/branches" element={<BranchLocatorPage />} />

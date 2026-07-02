@@ -204,20 +204,20 @@ const Header = ({ scrollToSection, homeRef, menuRef, contactRef }) => {
                   <div className="flex flex-col px-6 py-6 border-b" style={{ borderColor: '#F1F3F4' }}>
                      <div className="flex items-center gap-4 mb-4">
                         <div className="w-12 h-12 rounded-full flex items-center justify-center text-[#1E1E1E]" style={{ backgroundColor: '#FFC72C' }}>
-                          <FaUser className="w-6 h-6" />
+                           <FaUser className="w-6 h-6" />
                         </div>
                         <div>
-                          {user ? (
-                             <>
-                                <div className="text-sm text-gray-500">Welcome back</div>
-                                <div className="text-sm font-bold text-[#1E1E1E]">{user.phoneNumber}</div>
-                             </>
-                          ) : (
-                             <>
-                                <div className="text-sm text-gray-500">Login to explore</div>
-                                <div className="text-sm font-bold text-[#1E1E1E]">World of flavors</div>
-                             </>
-                          )}
+                           {user ? (
+                              <>
+                                 <div className="text-sm text-gray-500">Welcome back</div>
+                                 <div className="text-sm font-bold text-[#1E1E1E]">{user.phoneNumber}</div>
+                              </>
+                           ) : (
+                              <>
+                                 <div className="text-sm text-gray-500">Login to explore</div>
+                                 <div className="text-sm font-bold text-[#1E1E1E]">World of flavors</div>
+                              </>
+                           )}
                         </div>
                      </div>
                      {user ? (
@@ -278,23 +278,32 @@ const Header = ({ scrollToSection, homeRef, menuRef, contactRef }) => {
                     
                     <div className="h-px bg-gray-100 my-2 mx-6"></div>
 
-                  <button 
-                    onClick={handleScrollToBlogs}
-                    className="w-full text-left px-6 py-3 text-sm font-medium text-gray-600 hover:text-black transition-colors"
-                  >
-                    Blog
-                  </button>
-                <button 
-                  onClick={() => { navigate('/track-order'); setIsMenuOpen(false); }}
-                  className="w-full text-left px-6 py-3 text-sm font-medium text-gray-600 hover:text-black transition-colors"
-                >
-                  My Orders
-                </button>
-                  <button 
-                    onClick={() => { navigate('/privacy-policy'); setIsMenuOpen(false); }}
-                    className="w-full text-left px-6 py-3 text-sm font-medium text-gray-600 hover:text-black transition-colors"
-                  >
+                    <button 
+                      onClick={handleScrollToBlogs}
+                      className="w-full text-left px-6 py-3 text-sm font-medium text-gray-600 hover:text-black transition-colors"
+                    >
+                      Blog
+                    </button>
+
+                    <button 
+                      onClick={() => { navigate('/track-order'); setIsMenuOpen(false); }}
+                      className="w-full text-left px-6 py-3 text-sm font-medium text-gray-600 hover:text-black transition-colors"
+                    >
+                      My Orders
+                    </button>
+
+                    <button 
+                      onClick={() => { navigate('/privacy-policy'); setIsMenuOpen(false); }}
+                      className="w-full text-left px-6 py-3 text-sm font-medium text-gray-600 hover:text-black transition-colors"
+                    >
                       Privacy Policy
+                    </button>
+
+                    <button 
+                      onClick={() => { navigate('/delete-account'); setIsMenuOpen(false); }}
+                      className="w-full text-left px-6 py-3 text-sm font-medium text-gray-600 hover:text-black transition-colors"
+                    >
+                      Delete Account
                     </button>
                   </div>
   
