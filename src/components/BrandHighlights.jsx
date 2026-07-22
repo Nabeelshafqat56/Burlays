@@ -27,7 +27,7 @@ const defaultHighlights = [
 ];
 
 const BrandHighlights = () => {
-  const [highlights, setHighlights] = useState(defaultHighlights);
+  const [highlights, setHighlights] = useState([]);
 
   useEffect(() => {
     const fetchHighlights = async () => {
