@@ -60,12 +60,12 @@ const DownloadApp = () => {
 
               {/* App Store Buttons */}
               <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                 <button className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-800 transition-colors shadow-md">
+                 <a href="https://play.google.com/store/apps/details?id=com.burlays.official" target="_blank" rel="noopener noreferrer" className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-800 transition-colors shadow-md">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play" className="h-10" />
-                 </button>
-                 <button className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-800 transition-colors shadow-md">
+                 </a>
+                 <a href="https://apps.apple.com/pk/app/burlays/id6809545874" target="_blank" rel="noopener noreferrer" className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-800 transition-colors shadow-md">
                      <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store" className="h-10" />
-                 </button>
+                 </a>
               </div>
            </div>
         </div>

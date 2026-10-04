@@ -207,14 +207,14 @@ const StoreLocator = () => {
               </p>
 
               <div className="flex justify-center md:justify-start gap-4 mt-4">
-                <a href="#" target="_blank" rel="noopener noreferrer">
+                <a href="https://play.google.com/store/apps/details?id=com.burlays.official" target="_blank" rel="noopener noreferrer">
                   <img
                     src="/playstore.png"
                     alt="Google Play"
                     className="h-10"
                   />
                 </a>
-                <a href="#" target="_blank" rel="noopener noreferrer">
+                <a href="https://apps.apple.com/pk/app/burlays/id6809545874" target="_blank" rel="noopener noreferrer">
                   <img src="/appstore.png" alt="App Store" className="h-10" />
                 </a>
               </div>
