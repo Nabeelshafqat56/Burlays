@@ -215,7 +215,7 @@ const MenuPage = () => {
 
     // Regular Product Logic (Existing)
     // Start with base price (prioritizing discountPrice if available)
-    let finalPrice = Number(selectedProduct.price || 0);
+    let finalPrice = Number(selectedProduct.basePrice ?? selectedProduct.price ?? 0);
     if (selectedProduct.discountPrice && Number(selectedProduct.discountPrice) > 0) {
         finalPrice = Number(selectedProduct.discountPrice);
     }
@@ -567,25 +567,19 @@ const MenuPage = () => {
   };
 
   const getProductPrice = (product) => {
-      // User explicit instruction: "don't use variants price for main display"
-      // Use strictly product.price and product.discountPrice
-      
-      const basePrice = Number(product.price || 0);
+      const basePrice = Number(product.basePrice ?? product.price ?? 0);
       const discountPrice = Number(product.discountPrice || 0);
       
-      let priceDisplay;
+      let priceDisplay = basePrice;
       let hasDiscount = false;
-      let originalPrice = 0;
+      let originalPrice = basePrice;
 
-      if (discountPrice > 0) {
-          // Always prioritize discountPrice as the selling price if it exists
+      if (discountPrice > 0 && (basePrice === 0 || discountPrice < basePrice)) {
           priceDisplay = discountPrice;
           originalPrice = basePrice;
-          // ALWAYS show original price crossed out if discount exists
-          hasDiscount = true;
-      } else {
-          // No discount
-          priceDisplay = basePrice;
+          if (basePrice > 0) {
+              hasDiscount = true;
+          }
       }
 
       return (
@@ -594,8 +588,8 @@ const MenuPage = () => {
                  Rs. {priceDisplay.toLocaleString()}
              </span>
              {hasDiscount && (
-                 <span className="px-2 py-0.5 bg-[#E25C1D] text-white text-[9px] font-bold rounded-full">
-                     Starting Price
+                 <span className="text-gray-400 line-through text-xs font-semibold">
+                     Rs. {originalPrice.toLocaleString()}
                  </span>
              )}
           </div>
@@ -1362,7 +1356,7 @@ const MenuPage = () => {
                                 });
                             } else {
                                 // Regular Product Logic
-                                total = Number(selectedProduct.price || 0);
+                                total = Number(selectedProduct.basePrice ?? selectedProduct.price ?? 0);
                                 if (selectedProduct.discountPrice && Number(selectedProduct.discountPrice) > 0) {
                                     total = Number(selectedProduct.discountPrice);
                                 }

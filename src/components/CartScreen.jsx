@@ -262,7 +262,7 @@ const CartScreen = () => {
   const getRecoPrice = (item) => {
     const dealPrice = Number(item?.dealPrice || 0);
     const discountPrice = Number(item?.discountPrice || 0);
-    const basePrice = Number(item?.price || 0);
+    const basePrice = Number(item?.basePrice ?? item?.price ?? 0);
     return dealPrice > 0 ? dealPrice : discountPrice > 0 ? discountPrice : basePrice;
   };
 
