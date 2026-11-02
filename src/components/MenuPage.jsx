@@ -189,8 +189,12 @@ const MenuPage = () => {
         // Calculate total price based on deal base price + extra costs from all sub-products
         let dealTotal = Number(selectedProduct.dealPrice || selectedProduct.price || 0);
         dealItems.forEach(item => {
-            if (item.selectedVariants && item.selectedVariants.price) {
-                dealTotal += Number(item.selectedVariants.price);
+            const v = item.selectedVariants;
+            if (v && (v.price !== undefined && v.price !== null)) {
+                const vDisc = Number(v.discountPrice);
+                const vBase = Number(v.price || 0);
+                const vPrice = vDisc > 0 && (vBase === 0 || vDisc < vBase) ? vDisc : vBase;
+                dealTotal += vPrice;
             }
             if (item.selectedAddons) {
                 Object.values(item.selectedAddons).forEach(addon => {
@@ -220,9 +224,15 @@ const MenuPage = () => {
         finalPrice = Number(selectedProduct.discountPrice);
     }
     
-    // If a variant is selected, use the variant's price instead of the base price
-    if (selectedVariants && selectedVariants.price) {
-        finalPrice = Number(selectedVariants.price);
+    // If a variant is selected, use the variant's price instead of the base price (prioritizing variant's discountPrice if available)
+    if (selectedVariants && (selectedVariants.price !== undefined && selectedVariants.price !== null)) {
+        const vDiscount = Number(selectedVariants.discountPrice);
+        const vBase = Number(selectedVariants.price || 0);
+        if (vDiscount > 0 && (vBase === 0 || vDiscount < vBase)) {
+            finalPrice = vDiscount;
+        } else {
+            finalPrice = vBase;
+        }
     }
 
     // Add addon prices based on quantity
@@ -567,8 +577,30 @@ const MenuPage = () => {
   };
 
   const getProductPrice = (product) => {
-      const basePrice = Number(product.basePrice ?? product.price ?? 0);
-      const discountPrice = Number(product.discountPrice || 0);
+      // If product has variants, check if variants have discount or lower price
+      const variants = product.variants && product.variants.filter(v => v.name && Number(v.price) > 0);
+      let basePrice = Number(product.basePrice ?? product.price ?? 0);
+      let discountPrice = Number(product.discountPrice || 0);
+
+      // If product itself has no valid basePrice or if variants exist, check variants pricing
+      if (variants && variants.length > 0) {
+          // Find lowest variant regular price and lowest variant effective price
+          const lowestVariantPrice = Math.min(...variants.map(v => Number(v.price)));
+          const lowestVariantEffective = Math.min(...variants.map(v => {
+              const d = Number(v.discountPrice);
+              const p = Number(v.price);
+              return d > 0 && d < p ? d : p;
+          }));
+
+          if (basePrice === 0 || lowestVariantPrice < basePrice) {
+              basePrice = lowestVariantPrice;
+          }
+          if (lowestVariantEffective < basePrice) {
+              if (discountPrice === 0 || lowestVariantEffective < discountPrice) {
+                  discountPrice = lowestVariantEffective;
+              }
+          }
+      }
       
       let priceDisplay = basePrice;
       let hasDiscount = false;
@@ -948,9 +980,29 @@ const MenuPage = () => {
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-3">
-                                                    <span className="font-bold text-gray-900">
-                                                        {Number(variant.price) > 0 ? `+ Rs. ${variant.price}` : 'Free'}
-                                                    </span>
+                                                    {(() => {
+                                                        const vPrice = Number(variant.price || 0);
+                                                        const vDisc = Number(variant.discountPrice);
+                                                        const hasVDisc = vDisc > 0 && (vPrice === 0 || vDisc < vPrice);
+                                                        const effectivePrice = hasVDisc ? vDisc : vPrice;
+
+                                                        if (effectivePrice <= 0 && !hasVDisc) {
+                                                            return <span className="font-bold text-gray-900">Free</span>;
+                                                        }
+
+                                                        return (
+                                                            <div className="flex items-center gap-1.5 text-right">
+                                                                <span className="font-bold text-gray-900">
+                                                                    + Rs. {effectivePrice.toLocaleString()}
+                                                                </span>
+                                                                {hasVDisc && vPrice > 0 && (
+                                                                    <span className="text-gray-400 line-through text-xs font-semibold">
+                                                                        Rs. {vPrice.toLocaleString()}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    })()}
                                                     <input 
                                                         type="radio" 
                                                         name="variant" 
@@ -1343,8 +1395,11 @@ const MenuPage = () => {
                                     const selection = selectedDealProducts[idx] || {};
                                     
                                     // Add Variant Price
-                                    if (selection.variant && selection.variant.price) {
-                                        total += Number(selection.variant.price);
+                                    if (selection.variant && (selection.variant.price !== undefined && selection.variant.price !== null)) {
+                                        const vDisc = Number(selection.variant.discountPrice);
+                                        const vBase = Number(selection.variant.price || 0);
+                                        const vPrice = vDisc > 0 && (vBase === 0 || vDisc < vBase) ? vDisc : vBase;
+                                        total += vPrice;
                                     }
                                     
                                     // Add Addons Prices (Flavors, Beverages, Extras)
@@ -1360,8 +1415,14 @@ const MenuPage = () => {
                                 if (selectedProduct.discountPrice && Number(selectedProduct.discountPrice) > 0) {
                                     total = Number(selectedProduct.discountPrice);
                                 }
-                                if (selectedVariants.price) {
-                                    total = Number(selectedVariants.price);
+                                if (selectedVariants && (selectedVariants.price !== undefined && selectedVariants.price !== null)) {
+                                    const vDisc = Number(selectedVariants.discountPrice);
+                                    const vBase = Number(selectedVariants.price || 0);
+                                    if (vDisc > 0 && (vBase === 0 || vDisc < vBase)) {
+                                        total = vDisc;
+                                    } else {
+                                        total = vBase;
+                                    }
                                 }
                                 Object.values(selectedAddons).forEach(a => total += Number(a.price || 0) * (a.quantity || 1));
                             }
